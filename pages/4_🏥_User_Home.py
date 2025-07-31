@@ -567,17 +567,20 @@ def user_home_page():
                     st.success("Suggestion: Aim to incorporate physical activity into your daily routine. Start with small, achievable goals and gradually increase your activity level.")
                     st.divider()
                 # If steps are consistently decreasing
-                elif max(df['daily_steps'].iloc[i] >= df['daily_steps'].iloc[i + 1] for i in range(len(df) - 1)):
-                    alerts+=1
-                    st.error("Alert: Daily steps are consistently decreasing. It's important to maintain physical activity levels.")
-                    st.success("Suggestion: Find activities you enjoy and set specific goals to increase your daily step count. Consider walking meetings, taking the stairs, or going for a walk during breaks.")
-                    st.divider()
-                # If steps are not consistently maintained
+                elif len(df) >= 2:
+                    decreasing=all(df['daily_steps'].iloc[i] >= df['daily_steps'].iloc[i + 1] for i in range(len(df) - 1))
+                    if decreasing:
+                        alerts+=1
+                        st.error("Alert: Daily steps are consistently decreasing. It's important to maintain physical activity levels.")
+                        st.success("Suggestion: Find activities you enjoy and set specific goals to increase your daily step count. Consider walking meetings, taking the stairs, or going for a walk during breaks.")
+                        st.divider()               
+                    else:
+                        alerts+=1
+                        st.error("Alert: Daily steps are not consistently maintained. It's important to strive for regular physical activity.")
+                        st.success("Suggestion: Set a daily step goal and track your progress using a pedometer or smartphone app. Try to incorporate walking into your daily routine, such as walking instead of driving for short trips.")
+                        st.divider()
                 else:
-                    alerts+=1
-                    st.error("Alert: Daily steps are not consistently maintained. It's important to strive for regular physical activity.")
-                    st.success("Suggestion: Set a daily step goal and track your progress using a pedometer or smartphone app. Try to incorporate walking into your daily routine, such as walking instead of driving for short trips.")
-                    st.divider()
+                    st.info("Not enough data to analyze trends yet. Keep updating daily!")
                 rate_diff = df['respiratory_rate'].diff()
                 # If all differences are negative, respiration rate is consistently decreasing
                 if max(diff < 0 for diff in rate_diff):

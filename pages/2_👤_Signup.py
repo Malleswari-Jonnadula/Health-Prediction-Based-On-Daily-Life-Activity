@@ -70,13 +70,13 @@ with st.form(key="signup_form"):
         else:
             try:
                 add_user(name, email, age, gender, disease, occupation, password)
-                st.success("✅ Account created!")
+                st.success("✅ Account created!Please login.")
+                st.switch_page("pages/3_🔐_Login.py")
 
                 # ✅ SET session state so that login state is preserved
                 st.session_state["logged_in"] = True
                 st.session_state["current_user"] = email
 
-                st.switch_page("pages/3_🔐_Login.py")
             except Exception as e:
                 st.error(f"Error: {e}")
 
