@@ -3,6 +3,7 @@ import pickle
 from streamlit_option_menu import option_menu
 from database import create_tables
 create_tables()
+from database import fetch_user, fetch_daily, add_daily, fetch_user_by_id,fetch_all_daily
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
