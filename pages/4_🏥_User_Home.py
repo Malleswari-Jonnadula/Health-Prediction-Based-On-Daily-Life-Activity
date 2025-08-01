@@ -1,7 +1,8 @@
 import streamlit as st
 import pickle
 from streamlit_option_menu import option_menu
-from database import fetch_user, add_daily, fetch_all_daily
+from database import create_tables
+create_tables()
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
