@@ -7,3 +7,4 @@ seaborn
 matplotlib
 joblib
 psycopg2-binary
+python-dotenv
