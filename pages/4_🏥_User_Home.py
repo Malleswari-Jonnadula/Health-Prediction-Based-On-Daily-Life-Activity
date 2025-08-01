@@ -18,7 +18,7 @@ def save_login_status(logged_in, current_user):
         json.dump({"logged_in": logged_in, "current_user": current_user}, f)
 
 # --- On App Start ---
-if "logged_in" not in st.session_state or "current_user" not in st.session_state::
+if "logged_in" not in st.session_state:
     status = load_login_status()
     st.session_state["logged_in"] = status["logged_in"]
     st.session_state["current_user"] =  status["current_user"]
