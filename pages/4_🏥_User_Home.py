@@ -215,6 +215,29 @@ def user_home_page():
 
         if daily_data:
             daily_data_df = pd.DataFrame(daily_data)
+            try:
+                # Step 1: Explicit column names based on your table schema
+                columns = [
+                    'id', 'user_id', 'email', 'weight', 'sleep_duration', 'quality_of_sleep',
+                    'physical_activity_level', 'stress_level', 'bmi_category', 'blood_pressure',
+                    'heart_rate', 'daily_steps', 'respiratory_rate', 'blood_volume',
+                    'calories_burned', 'body_temperature', 'drinking_water', 'daily_usage_of_smartphone'
+                ]
+                daily_data_df.columns = columns
+
+                # Step 2: Drop unwanted columns to get only 15 data fields
+                df = daily_data_df.drop(['id', 'user_id', 'email'], axis=1)
+
+                # Step 3: Get latest values safely
+                row_values = df.tail(1).values[0]
+
+                # Step 4: Unpack the exact 15 expected values
+                wt, slp, qslp, pal, sl, bmi, bp, hr, ds, rr, bv, cb, bt, dw, dus = row_values
+
+            except Exception as e:
+                st.error(f"⚠️ Something went wrong while unpacking daily data: {e}")
+                st.stop()
+
             row_values = daily_data_df.tail(1).values[0][2:]
             wt, slp, qslp, pal, sl, bmi, bp, hr, ds, rr, bv, cb, bt, dw, dus = row_values[:15]
         else:
@@ -653,7 +676,7 @@ def user_home_page():
                 else:
                     st.markdown('<h1 style="color: red; text-align: center;">🔴 High Risk — Please Consult a Doctor</h1>', unsafe_allow_html=True)
                     col1, col2, col3 = st.columns(3)
-                    col2.image("https://png.pngtree.com/png-clipart/20230816/original/pngtree-doctor-consultation-icon-visit-vector-consultation-vector-picture-image_10832751.png", use_column_width=True)
+                    col2.image("https://png.pngtree.com/png-clipart/20230816/original/pngtree-doctor-consultation-icon-visit-vector-consultation-vector-picture-image_10832751.png", use_container_width=True)
 
                 try:
                     gender = user[3] if isinstance(user[3], str) else 'Male'

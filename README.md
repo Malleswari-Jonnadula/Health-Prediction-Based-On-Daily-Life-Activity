@@ -4,7 +4,7 @@ This project uses Machine Learning to predict a person’s health risk level bas
 ## 🔗Live Demo
 
 
-👉[Click here to open the deployed Streamlit app](https://health-prediction-based-on-life-activity.streamlit.app/)
+👉[Click here to open the deployed Streamlit app](https://health-prediction-based-on-daily-life-activity.streamlit.app/)
 
 
 ## 🧠Problem Statement
