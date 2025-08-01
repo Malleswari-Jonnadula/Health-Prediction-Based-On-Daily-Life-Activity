@@ -346,6 +346,14 @@ def user_home_page():
             daily_data_df.columns=columns
             df=daily_data_df.drop(['ID','mail'],axis=1)
             st.write(df)
+            st.markdown("""
+                    <style>
+                        label[data-testid="stCheckboxLabel"] > div {
+                            color: black !important;
+                        }
+                    </style>
+                """, unsafe_allow_html=True)
+
             if st.checkbox('Show Analytics'):
                 col1, col2 = st.columns(2)
                 # Unique usage times and their counts
