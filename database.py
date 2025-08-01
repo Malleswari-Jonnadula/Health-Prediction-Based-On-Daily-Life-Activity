@@ -1,9 +1,17 @@
-import psycopg2
+
 import streamlit as st
+import os
+from dotenv import load_dotenv
+try:
+    import psycopg2
+except ImportError:
+    import psycopg2_binary as psycopg2
+load_dotenv()
 
 # Connect using secrets
 def get_connection():
-    return psycopg2.connect(st.secrets["DB_URL"])
+    DB_URL = os.getenv("DB_URL") or "postgresql://postgres:Malleswari%401@db.qgprneayibukmvbbkfnz.supabase.co:5432/postgres"
+    return psycopg2.connect(DB_URL)
 
 # Create tables (if not exists)
 def create_tables():

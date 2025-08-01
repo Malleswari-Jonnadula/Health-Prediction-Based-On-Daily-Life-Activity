@@ -212,9 +212,11 @@ def user_home_page():
         age = user[4]
         daily_data = fetch_all_daily(user[2])
 
+
         if daily_data:
             daily_data_df = pd.DataFrame(daily_data)
-            wt, slp, qslp, pal, sl, bmi, bp, hr, ds, rr, bv, cb, bt, dw, dus = daily_data_df.tail(1).values[0][2:]
+            row_values = daily_data_df.tail(1).values[0][2:]
+            wt, slp, qslp, pal, sl, bmi, bp, hr, ds, rr, bv, cb, bt, dw, dus = row_values[:15]
         else:
             wt, slp, qslp, pal, sl, bmi, bp, hr, ds, rr, bv, cb, bt, dw, dus = 0, 0, 0, 0, 0, 'Normal', 0, 0, 0, 0, 0, 0, 0, 0, 0
         wt = float(wt) if isinstance(wt, (int, float)) and 3 <= wt <= 200 else 60.0
@@ -340,19 +342,16 @@ def user_home_page():
         daily_data = fetch_all_daily(user[2])
         if daily_data:
             daily_data_df = pd.DataFrame(daily_data)
-            columns = ['ID','mail', 'weight', 'sleep_duration', 'quality_of_sleep',
-                        'physical_activity_level', 'stress_level', 'BMI_category', 'blood_pressure', 'heart_rate',
-                        'daily_steps', 'respiratory_rate', 'blood_volume', 'calories_burned', 'body_temperature',
-                        'drinking_water', 'daily_usage_of_smart_phone']
+            columns = ['id', 'user_id', 'email', 'weight', 'sleep_duration', 'quality_of_sleep', 'physical_activity_level', 'stress_level', 'bmi_category', 'blood_pressure', 'heart_rate', 'daily_steps', 'respiratory_rate', 'blood_volume', 'calories_burned', 'body_temperature', 'drinking_water', 'daily_usage_of_smartphone']
             #make a dataframe with column names
             daily_data_df.columns=columns
-            df=daily_data_df.drop(['ID','mail'],axis=1)
+            df=daily_data_df.drop(['user_id','email'],axis=1)
             st.write(df)
             if st.checkbox('Show Analytics'):
                 col1, col2 = st.columns(2)
                 # Unique usage times and their counts
-                unique_times = df['daily_usage_of_smart_phone'].unique()
-                counts = df['daily_usage_of_smart_phone'].value_counts()
+                unique_times = df['daily_usage_of_smartphone'].unique()
+                counts = df['daily_usage_of_smartphone'].value_counts()
                 colors = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'orange']
 
                 # Sleep Duration Distribution
@@ -416,12 +415,12 @@ def user_home_page():
                 col2.markdown(f'<h3 style="color: red; text-align: center;">Drinking Water Intake Distribution</h3>', unsafe_allow_html=True)
                 col2.pyplot(fig)
                 col1,col2=st.columns(2)
-                bmi_plot = df['BMI_category'].value_counts().plot(kind='bar', color=['#FF9999', '#66B2FF'], figsize=(6, 4))
+                bmi_plot = df['bmi_category'].value_counts().plot(kind='bar', color=['#FF9999', '#66B2FF'], figsize=(6, 4))
                 col1.markdown(f'<h3 style="color: blue; text-align: center;">BMI Category Distribution</h3>', unsafe_allow_html=True)
                 col1.pyplot(bmi_plot.figure)
 
                 fig = plt.figure(figsize=(6, 4))
-                sns.scatterplot(x=df['weight'], y=df['heart_rate'], hue=df['BMI_category'], palette='viridis')
+                sns.scatterplot(x=df['weight'], y=df['heart_rate'], hue=df['bmi_category'], palette='viridis')
                 col2.markdown(f'<h3 style="color: yellow; text-align: center;">Weight vs Heart Rate</h3>', unsafe_allow_html=True)
                 col2.pyplot(fig)
                 col1, col2 = st.columns(2)
@@ -476,7 +475,7 @@ def user_home_page():
 
                 numerical_columns = ['weight', 'sleep_duration', 'quality_of_sleep', 'physical_activity_level', 'stress_level', 
                         'blood_pressure', 'heart_rate', 'daily_steps', 'respiratory_rate', 'blood_volume', 
-                        'calories_burned', 'body_temperature', 'drinking_water', 'daily_usage_of_smart_phone']
+                        'calories_burned', 'body_temperature', 'drinking_water', 'daily_usage_of_smartphone']
 
                 # Compute the correlation matrix
                 correlation_matrix = df[numerical_columns].corr()
@@ -499,14 +498,11 @@ def user_home_page():
             if daily_data_df.empty:
                 st.error("No data available for statistics.")
             else:
-                columns = ['ID','mail', 'weight', 'sleep_duration', 'quality_of_sleep',
-                            'physical_activity_level', 'stress_level', 'BMI_category', 'blood_pressure', 'heart_rate',
-                            'daily_steps', 'respiratory_rate', 'blood_volume', 'calories_burned', 'body_temperature',
-                            'drinking_water', 'daily_usage_of_smart_phone']
+                columns = ['id', 'user_id', 'email', 'weight', 'sleep_duration', 'quality_of_sleep', 'physical_activity_level', 'stress_level', 'bmi_category', 'blood_pressure', 'heart_rate', 'daily_steps', 'respiratory_rate', 'blood_volume', 'calories_burned', 'body_temperature', 'drinking_water', 'daily_usage_of_smartphone']
                     #make a dataframe with column names
 
                 daily_data_df.columns=columns
-                df=daily_data_df.drop(['ID','mail'],axis=1)
+                df=daily_data_df.drop(['user_id','email'],axis=1)
                 st.write(df)
                 weight_diff = df['weight'].diff()
                 if max(diff < 0 for diff in weight_diff):
@@ -644,7 +640,7 @@ def user_home_page():
                 recommended_low = 2  # hours (minimum)
                 recommended_high = 8  # hours (maximum for healthy usage)
                 # Check if any usage time readings are above the recommended maximum
-                if max(usage > recommended_high for usage in df['daily_usage_of_smart_phone']):
+                if max(usage > recommended_high for usage in df['daily_usage_of_smartphone']):
                     alerts+=1
                     st.error("Alert: Daily usage time of smartphone is above the recommended range.")
                     st.success("Suggestion: Limit screen time and take breaks from smartphone use. Consider setting usage limits or using apps that track and manage screen time.")
@@ -662,37 +658,50 @@ def user_home_page():
                 try:
                     gender = user[3] if isinstance(user[3], str) else 'Male'
                     age = user[4] if isinstance(user[4], (int, float)) else 22
-                    df.columns = ['weight', 'sleep_duration', 'quality_of_sleep',
-                        'physical_activity_level', 'stress_level', 'BMI_category',
-                        'blood_pressure', 'heart_rate', 'daily_steps', 'respiratory_rate',
-                        'blood_volume', 'calories_burned', 'body_temperature',
-                        'drinking_water', 'daily_usage_of_smart_phone']
-                    df_kmeans = df.copy()
-                    df_kmeans['Gender'] = 1 if gender.lower().startswith('female') else 0
-                    df_kmeans['Age'] = age
-                    df_kmeans.rename(columns={
+
+                    # Only rename columns if the column count is correct
+                    expected_cols = [
+                        'id', 'user_id', 'email', 'weight', 'sleep_duration', 'quality_of_sleep',
+                        'physical_activity_level', 'stress_level', 'bmi_category', 'blood_pressure',
+                        'heart_rate', 'daily_steps', 'respiratory_rate', 'blood_volume',
+                        'calories_burned', 'body_temperature', 'drinking_water', 'daily_usage_of_smartphone'
+                    ]
+                    if df.shape[1] == len(expected_cols):
+                        df.columns = expected_cols
+
+                    # Drop unwanted columns safely
+                    df.drop(columns=['id', 'user_id', 'email'], inplace=True, errors='ignore')
+
+                    # Rename ML feature columns
+                    df.rename(columns={
                         'weight': 'Weight',
                         'sleep_duration': 'Sleep Duration',
                         'quality_of_sleep': 'Quality of Sleep',
                         'physical_activity_level': 'Physical Activity Level',
                         'stress_level': 'Stress Level',
-                        'BMI_category': 'BMI Category',
+                        'bmi_category': 'BMI Category',
                         'blood_pressure': 'Blood Pressure',
                         'heart_rate': 'Heart Rate',
                         'daily_steps': 'Daily Steps',
                         'respiratory_rate': 'Respiration Rate',
                         'blood_volume': 'Blood Volume',
+                        'calories_burned': 'Calories Burned',
                         'body_temperature': 'Body Temperature',
                         'drinking_water': 'Drinking Water (lts)',
-                        'daily_usage_of_smart_phone': 'Daily Usage Time of Smart Phone'
+                        'daily_usage_of_smartphone': 'Daily Usage Time of Smart Phone'
                     }, inplace=True)
 
-                    # Step 4: Encode 'BMI Category'
+                    # Add Gender & Age
+                    df['Gender'] = 1 if gender.lower().startswith('female') else 0
+                    df['Age'] = age
+
+                    # Encode BMI Category
                     from sklearn.preprocessing import LabelEncoder
                     le = LabelEncoder()
-                    df_kmeans['BMI Category'] = le.fit_transform(df_kmeans['BMI Category'])
+                    if 'BMI Category' in df.columns:
+                        df['BMI Category'] = le.fit_transform(df['BMI Category'])
 
-                    # Step 5: Arrange columns in exact training order
+                    # Final features expected by the model
                     prediction_features = [
                         'Gender', 'Age', 'Weight', 'Sleep Duration', 'Quality of Sleep',
                         'Physical Activity Level', 'Stress Level', 'BMI Category', 'Heart Rate',
@@ -700,11 +709,16 @@ def user_home_page():
                         'Drinking Water (lts)', 'Daily Usage Time of Smart Phone'
                     ]
 
-                    # Step 6: Predict risk cluster
-                    prediction_input = df_kmeans[prediction_features]
+                    # Validate all required features exist
+                    missing = [col for col in prediction_features if col not in df.columns]
+                    if missing:
+                        st.warning(f"⚠️ Missing required columns: {missing}")
+                    else:
+                        prediction_input = df[prediction_features]
 
                 except Exception as e:
-                        st.warning(f"⚠️ Something went wrong while predicting risk cluster: {e}")                
+                    st.warning(f"⚠️ Something went wrong while predicting risk cluster: {e}")
+                    
 
                 
 
