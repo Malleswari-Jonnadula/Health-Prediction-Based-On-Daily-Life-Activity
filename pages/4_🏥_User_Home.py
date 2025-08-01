@@ -18,7 +18,7 @@ def save_login_status(logged_in, current_user):
         json.dump({"logged_in": logged_in, "current_user": current_user}, f)
 
 # --- On App Start ---
-if "logged_in" not in st.session_state:
+if "logged_in" not in st.session_state or "current_user" not in st.session_state::
     status = load_login_status()
     st.session_state["logged_in"] = status["logged_in"]
     st.session_state["current_user"] =  status["current_user"]
@@ -33,7 +33,14 @@ def navigate_to_page(page_name):
     st.rerun()
 
 def user_home_page():
+    if "current_user" not in st.session_state or not st.session_state["current_user"]:
+        st.warning("⚠️ Session expired. Please log in again.")
+        st.stop()
+
     user = fetch_user(st.session_state["current_user"])
+    if not user:
+        st.error("User not found. Please log in again.")
+        st.stop()
     
     with st.sidebar:
         st.markdown(f"""
@@ -316,7 +323,7 @@ def user_home_page():
         <style>
         /* Apply background image to the main content area */
         .main {
-            background-image: url("https://www.shutterstock.com/image-vector/abstract-infographic-visualization-financial-chart-600nw-2428087473.jpg");
+            background-image: url("https://i.pinimg.com/1200x/f4/de/63/f4de6369f75f36c395c699ad3940b90c.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
