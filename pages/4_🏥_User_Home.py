@@ -18,7 +18,7 @@ def save_login_status(logged_in, current_user):
         json.dump({"logged_in": logged_in, "current_user": current_user}, f)
 
 # --- On App Start ---
-if "logged_in" not in st.session_state:
+if "logged_in" not in st.session_state or "current_user" not in st.session_state::
     status = load_login_status()
     st.session_state["logged_in"] = status["logged_in"]
     st.session_state["current_user"] =  status["current_user"]
@@ -323,7 +323,7 @@ def user_home_page():
         <style>
         /* Apply background image to the main content area */
         .main {
-            background-image: url("https://i.pinimg.com/1200x/f4/de/63/f4de6369f75f36c395c699ad3940b90c.jpg");
+            background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zNzNiYXRjaDE1LWJnLTExLmpwZw.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -346,14 +346,6 @@ def user_home_page():
             daily_data_df.columns=columns
             df=daily_data_df.drop(['ID','mail'],axis=1)
             st.write(df)
-            st.markdown("""
-                    <style>
-                        label[data-testid="stCheckboxLabel"] > div {
-                            color: black !important;
-                        }
-                    </style>
-                """, unsafe_allow_html=True)
-
             if st.checkbox('Show Analytics'):
                 col1, col2 = st.columns(2)
                 # Unique usage times and their counts
@@ -663,7 +655,7 @@ def user_home_page():
                 else:
                     st.markdown('<h1 style="color: red; text-align: center;">🔴 High Risk — Please Consult a Doctor</h1>', unsafe_allow_html=True)
                     col1, col2, col3 = st.columns(3)
-                    col2.image("https://png.pngtree.com/png-clipart/20230816/original/pngtree-doctor-consultation-icon-visit-vector-consultation-vector-picture-image_10832751.png", use_column_width=True)
+                    col2.image("https://png.pngtree.com/png-clipart/20230816/original/pngtree-doctor-consultation-icon-visit-vector-consultation-vector-picture-image_10832751.png", use_container_width=True)
 
                 try:
                     gender = user[3] if isinstance(user[3], str) else 'Male'
