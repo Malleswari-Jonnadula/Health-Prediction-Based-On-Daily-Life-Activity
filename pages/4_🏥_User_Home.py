@@ -655,7 +655,7 @@ def user_home_page():
                 else:
                     st.markdown('<h1 style="color: red; text-align: center;">🔴 High Risk — Please Consult a Doctor</h1>', unsafe_allow_html=True)
                     col1, col2, col3 = st.columns(3)
-                    col2.image("https://png.pngtree.com/png-clipart/20230816/original/pngtree-doctor-consultation-icon-visit-vector-consultation-vector-picture-image_10832751.png", use_container_width=True)
+                    col2.image("https://png.pngtree.com/png-clipart/20230816/original/pngtree-doctor-consultation-icon-visit-vector-consultation-vector-picture-image_10832751.png", use_column_width=True)
 
                 try:
                     gender = user[3] if isinstance(user[3], str) else 'Male'
